@@ -1,0 +1,5 @@
+imageio==2.5.0
+numpy==1.16.3
+opencv-python==4.1.0.25
+pep8==1.7.1
+Pillow==6.0.0
