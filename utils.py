@@ -16,7 +16,12 @@ def print_step(info: str):
     print(f'........{info}........')
 
 
-def add_number_file_name(path: str, i: int = 1) -> str:
-    paths = path.split('.')
+def add_number_file_name(p: str, i: int = 1) -> str:
+    paths = p.split('.')
     name_int = int(paths[0]) + i
     return str(name_int) + '.' + paths[1]
+
+
+def get_file_name(p: str) -> str:
+    fn = path.splitext(p)[0]
+    return fn.split('/')[-1]

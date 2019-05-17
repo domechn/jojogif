@@ -7,7 +7,7 @@ import click
 @click.option('--out-path', default='./', help='out path')
 @click.option('--begin', default=0, help='from which time to start generate gif', type=float)
 @click.option('--end', default=0, help='from which time to end generate gif', type=float)
-@click.option('--size', default='', help='the size of gif')
+@click.option('--size', default='', help='the size of gif, width*height, ex: 500*500')
 @click.option('--jojo', default=False, help='add to be continued', type=bool)
 def main(path, out_path: str, begin, end: float, size: str, jojo: bool):
     try:
