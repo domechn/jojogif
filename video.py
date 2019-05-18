@@ -2,12 +2,14 @@ import random
 import shutil
 import string
 import tempfile
+from base64 import b64decode
 
 import cv2
 import numpy as np
 import imageio
 from os import path,  listdir
 from utils import *
+from common import logo_base64
 
 _random_dir_name_len = 10
 _to_be_continued_path = 'image/to_be_continued.png'
@@ -81,7 +83,9 @@ class VideoService():
             makedirs(dir_path)
         try:
             if jojo:
-                con_image = cv2.imread(_to_be_continued_path, -1)
+                img_data = b64decode(logo_base64)
+                img_array = np.frombuffer(img_data, np.uint8)  # 转换np序列
+                con_image = cv2.imdecode(img_array, -1)
                 temp_last_name = ls[-1]
                 self.blur_last_image(get_image_path(temp_last_name))
                 tp = cv2.imread(self._temp_file)

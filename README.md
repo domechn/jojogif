@@ -5,19 +5,21 @@
 ## 安装
 
 ```bash
-pip3 install jojogif
+pip3 install -r requirement.txt
 ```
+
+> Python3
 
 #### 普通转换
 
 ```bash
-jojogif --path video-path --begin 1 --end 2.2 --out-path ./
+py main.py --path video-path --begin 1 --end 2.2 --out-path ./
 ```
 
 #### 添加标准结局
 
 ```bash
-jojogif --path video-path --begin 1 --end 2.2 --out-path ./ --jojo true
+py main.py --path video-path --begin 1 --end 2.2 --out-path ./ --jojo true
 ```
 
 #### 示例
