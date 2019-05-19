@@ -3,6 +3,7 @@ import shutil
 import string
 import tempfile
 from base64 import b64decode
+from math import floor
 
 import cv2
 import numpy as np
@@ -85,14 +86,18 @@ class VideoService():
             if jojo:
                 img_data = b64decode(logo_base64)
                 img_array = np.frombuffer(img_data, np.uint8)  # 转换np序列
-                con_image = cv2.imdecode(img_array, -1)
+                con_image = cv2.resize(cv2.imdecode(
+                    img_array, -1), (int(self._width*0.5), int(self._height*0.3)))
                 temp_last_name = ls[-1]
                 self.blur_last_image(get_image_path(temp_last_name))
                 tp = cv2.imread(self._temp_file)
-                for i in range(10):
+                for i in range(1, 11):
                     name = get_image_path(
-                        add_number_file_name(temp_last_name, i+1))
-                    cv2.imwrite(name, self.cover(con_image, tp))
+                        add_number_file_name(temp_last_name, i))
+                    s_width, x_offset = self.get_width_and_x_offset(
+                        con_image.shape[1], self._width, i)
+                    cv2.imwrite(name, self.cover(
+                        con_image[:, :s_width], tp, x_offset))
                     ls.append(name)
 
             frames = [imageio.imread(get_image_path(image_name))
@@ -110,14 +115,12 @@ class VideoService():
         self._temp_file = temp_file_path
         cv2.imwrite(temp_file_path, last_image_blur)
 
-    def cover(self, s_img, l_img, x_offset=0, y_offset=0):
-        l_height, l_width = l_img.shape[0], l_img.shape[1]
-        s_img = cv2.resize(s_img, (int(l_width*0.5), int(l_height*0.3)))
-        x_offset = int(l_width * 0.1)
-        y_offset = int(l_height * 0.7)
+    def cover(self, s_img, l_img, x_offset: int):
+        x_offset = 0
+        y_offset = int(self._height * 0.7)
         y1, y2 = y_offset, y_offset + s_img.shape[0]
         x1, x2 = x_offset, x_offset + s_img.shape[1]
-
+        print(s_img.shape[0], s_img.shape[1], x1, x2)
         alpha_s = s_img[:, :, 3] / 255.0
         alpha_l = 1.0 - alpha_s
 
@@ -125,3 +128,24 @@ class VideoService():
             l_img[y1:y2, x1:x2, c] = (alpha_s * s_img[:, :, c] +
                                       alpha_l * l_img[y1:y2, x1:x2, c])
         return l_img
+        # l_height, l_width = l_img.shape[0], l_img.shape[1]
+        # print(l_width,l_height)
+        # s_img = cv2.resize(s_img, (int(l_height*0.3), int(l_width * 0.5)))
+        # x_offset = int(l_width * 0.1)
+        # y_offset = int(l_height * 0.7)
+        # y1, y2 = y_offset, y_offset + s_img.shape[0]
+        # x1, x2 = x_offset, x_offset + s_img.shape[1]
+
+        # alpha_s = s_img[:, :, 3] / 255.0
+        # alpha_l = 1.0 - alpha_s
+
+        # for c in range(3):
+        #     l_img[y1:y2, x1:x2, c] = (alpha_s * s_img[:, :, c] +
+        #                               alpha_l * l_img[y1:y2, x1:x2, c])
+        # return l_img
+
+    def get_width_and_x_offset(self, s_width, l_width, i: int) -> (int, int):
+        if i < 6:
+            s_width *= i / 5
+        x_offset = l_width * (1 - i * 0.11111)
+        return floor(s_width), floor(x_offset)
