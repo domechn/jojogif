@@ -17,18 +17,15 @@ _to_be_continued_path = 'image/to_be_continued.png'
 
 class VideoService():
 
-    def __init__(self, pt: str, begin, end: float, width, height: int):
+    def __init__(self, pt: str, begin, end: float, width, height, fps: int):
         if not end:
             end = 20
         self._path = pt
         self._begin = begin
         self._end = end
-        self._width = 0
-        self._height = 0
-        if width:
-            self._width = width
-        if height:
-            self._height = height
+        self._width = width or 0
+        self._height = height or 0
+        self._fps = fps
         self._to_dir = path.join(
             tempfile.gettempdir(), 'jojogif',
             ''.join(random.sample(string.ascii_letters + string.digits,
@@ -44,7 +41,7 @@ class VideoService():
                 width = self._width or vc.get(cv2.CAP_PROP_FRAME_WIDTH)
                 height = self._height or vc.get(cv2.CAP_PROP_FRAME_HEIGHT)
                 fps = vc.get(cv2.CAP_PROP_FPS)
-                timeF = int(fps / 10)
+                timeF = int(fps / self._fps) or 1
             else:
                 raise RuntimeError("cannot open video")
             while True:

@@ -9,7 +9,8 @@ import click
 @click.option('--end', default=0, help='from which time to end generate gif', type=float)
 @click.option('--size', default='', help='the size of gif, width*height, ex: 500*500')
 @click.option('--jojo', default=False, help='add to be continued', type=bool)
-def main(path, out_path: str, begin, end: float, size: str, jojo: bool):
+@click.option('--fps', default=10, help='fps of gif', type=int)
+def main(path, out_path: str, begin, end: float, size: str, jojo: bool, fps: int):
     try:
         if not path:
             raise RuntimeError("error: path must not be None")
@@ -17,7 +18,7 @@ def main(path, out_path: str, begin, end: float, size: str, jojo: bool):
     except RuntimeError as e:
         print(str(e))
         return
-    vs = VideoService(path, begin, end, width, height)
+    vs = VideoService(path, begin, end, width, height, fps)
     vs.to_images()
     vs.to_gif(jojo, out_path)
 
