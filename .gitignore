@@ -105,3 +105,6 @@ venv.bak/
 .vscode/
 .DS_Store
 .history/
+test.gif
+test.mp4
+pyvenv.cfg

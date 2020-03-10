@@ -32,6 +32,9 @@ class VideoService():
                                   _random_dir_name_len)))
 
     def to_images(self):
+        '''
+        Convert video to picture at frame rate
+        '''
         c = 0
         print_step('begin to make video to images')
         make_dir_nx(self._to_dir)
@@ -64,6 +67,9 @@ class VideoService():
         print_step('make video to images successfully')
 
     def to_gif(self, jojo: bool, out_path: str):
+        '''
+        Convert video to picture at frame rate
+        '''
         def get_image_path(p: str) -> str:
             return path.join(self._to_dir, p)
 
@@ -80,21 +86,11 @@ class VideoService():
             makedirs(dir_path)
         try:
             if jojo:
-                img_data = b64decode(logo_base64)
-                img_array = np.frombuffer(img_data, np.uint8)  # 转换np序列
-                con_image = cv2.imdecode(img_array, -1)
-                temp_last_name = ls[-1]
-                self.blur_last_image(get_image_path(temp_last_name))
-                tp = cv2.imread(self._temp_file)
-                for i in range(10):
-                    name = get_image_path(
-                        add_number_file_name(temp_last_name, i+1))
-                    cv2.imwrite(name, self.cover(con_image, tp))
-                    ls.append(name)
+                ls = np.append(ls, self.add_tbc_logo(ls[-1], get_image_path))
+                # ls.append(self.add_tbc_logo(ls[-1], get_image_path))
 
             frames = [imageio.imread(get_image_path(image_name))
                       for image_name in ls]
-
             imageio.mimsave(outfilename, frames, 'GIF')
         finally:
             rm_dir_f(self._to_dir)
@@ -107,7 +103,28 @@ class VideoService():
         self._temp_file = temp_file_path
         cv2.imwrite(temp_file_path, last_image_blur)
 
+    def add_tbc_logo(self, last_image_name, get_image_path) -> list:
+        '''
+        add to be continued logo to the left-bottom of the image
+        return: the name of all translated images
+        '''
+        img_data = b64decode(logo_base64)
+        img_array = np.frombuffer(img_data, np.uint8)  # 转换np序列
+        con_image = cv2.imdecode(img_array, -1)
+        self.blur_last_image(get_image_path(last_image_name))
+        tp = cv2.imread(self._temp_file)
+        res = list()
+        for i in range(10):
+            name = get_image_path(
+                add_number_file_name(last_image_name, i+1))
+            cv2.imwrite(name, self.cover(con_image, tp))
+            res.append(name)
+        return res
+
     def cover(self, s_img, l_img, x_offset=0, y_offset=0):
+        '''
+        Overlay the s_image on the l_img
+        '''
         l_height, l_width = l_img.shape[0], l_img.shape[1]
         s_img = cv2.resize(s_img, (int(l_width*0.5), int(l_height*0.3)))
         x_offset = int(l_width * 0.1)

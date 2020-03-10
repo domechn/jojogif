@@ -17,10 +17,12 @@ def print_step(info: str):
 
 
 def add_number_file_name(p: str, i: int = 1) -> str:
+    '''
+    Add 1 to the name of a number-named file
+    '''
     paths = p.split('.')
     name_int = int(paths[0]) + i
     return str(name_int) + '.' + paths[1]
-
 
 def get_file_name(p: str) -> str:
     fn = path.splitext(p)[0]
