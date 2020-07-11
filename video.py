@@ -58,7 +58,7 @@ class VideoService():
                     break
                 if c % timeF == 0:
                     frame = cv2.resize(
-                        frame, (int(width * 0.5), int(height * 0.5)), interpolation=cv2.INTER_AREA)
+                        frame, (width, height), interpolation=cv2.INTER_AREA)
 
                     cv2.imwrite(f'{self._to_dir}/{c}.jpg', frame)
                 cv2.waitKey(1)
