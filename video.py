@@ -30,6 +30,9 @@ class VideoService():
             tempfile.gettempdir(), 'jojogif',
             ''.join(random.sample(string.ascii_letters + string.digits,
                                   _random_dir_name_len)))
+        self._timeF = int(fps / self._fps) or 1
+        true_fps = fps / self._timeF
+        self._gif_delay = 1 / true_fps
 
     def to_images(self):
         '''
@@ -44,7 +47,7 @@ class VideoService():
                 width = self._width or vc.get(cv2.CAP_PROP_FRAME_WIDTH)
                 height = self._height or vc.get(cv2.CAP_PROP_FRAME_HEIGHT)
                 fps = vc.get(cv2.CAP_PROP_FPS)
-                timeF = int(fps / self._fps) or 1
+                timeF = self._timeF
             else:
                 raise RuntimeError("cannot open video")
             while True:
@@ -91,7 +94,7 @@ class VideoService():
 
             frames = [imageio.imread(get_image_path(image_name))
                       for image_name in ls]
-            imageio.mimsave(outfilename, frames, 'GIF')
+            imageio.mimsave(outfilename, frames, 'GIF', duration=self._gif_delay)
         finally:
             rm_dir_f(self._to_dir)
 

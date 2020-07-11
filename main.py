@@ -26,7 +26,7 @@ def main(path, out_path: str, begin, end: float, size: str, jojo: bool, fps: int
 def parse_size(size: str):
     if not size:
         return 0, 0
-    sizes = size.upper().split('X')
+    sizes = size.upper().split('*')
     if len(sizes) != 2:
         raise RuntimeError("size is invalid, ex: 200x200")
     return int(sizes[0]), int(sizes[1])
