@@ -28,4 +28,4 @@ py main.py --path video-path --begin 1 --end 2.2 --out-path ./ --jojo true
 
 ![image/example.gif](./image/example.gif)
 
-> 如果生成的gif过大，使用--size与--gif设置合理地大小
+> 如果生成的gif过大，使用--size与--fps设置合理地大小
